@@ -1,18 +1,13 @@
 import express from "express";
 import cors from "cors";
-import { swaggerUi, swaggerSpec } from "./docs/swagger.js";
-import authRoute from "./routes/auth.route.js";
-import balanceRoute from "./routes/balance.route.js";
-import { errorHandler } from "./middlewares/error.middleware.js";
+import authRoute from "./services/authServices.js";
+import balanceRoute from "./services/balanceServices.js";
+import { errorHandler } from "./middlewares/errorMiddleware.js";
 import "dotenv/config";
-
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// Swagger route
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use("/api", authRoute);
