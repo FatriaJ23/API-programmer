@@ -30,8 +30,8 @@ export const login = async (req, res) => {
     const user = rows[0];
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(401).json({ message: "Wrong password" });
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const SECRET_KEY = process.env.JWT_SECRET || "dev-secret-" + Math.random().toString(36).slice(2, 10);
+    const token = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: "1h" });
     res.json({ status: "success", token });
   } catch (err) {
     res.status(500).json({ message: err.message });

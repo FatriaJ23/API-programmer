@@ -13,7 +13,8 @@ export const verifyToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const SECRET_KEY = process.env.JWT_SECRET || "dev-secret-" + Math.random().toString(36).slice(2, 10);
+    const decoded = jwt.verify(token, SECRET_KEY);
     req.user = decoded; // save user data to request
     next(); // continue to the protected route
   } catch (err) {

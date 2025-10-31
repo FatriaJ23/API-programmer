@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { swaggerUi, swaggerSpec } from "./config/swagger.js";
-import authRoute from "./services/authServices.js";
-import balanceRoute from "./services/balanceServices.js";
-import { errorHandler } from "./middlewares/error.middleware.js";
+import authRoute from "./api/authApi.js";
+import balanceRoute from "./api/balanceApi.js";
+import { errorHandler } from "./middlewares/errorMiddleware.js";
 import "dotenv/config";
 
 
