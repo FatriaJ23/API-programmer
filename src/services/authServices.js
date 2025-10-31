@@ -4,19 +4,31 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
 
-    if (!name || !email || !password)
-      return res.status(400).json({ message: "All fields required" });
+    // Validate required fields
+    if (!first_name || !last_name || !email || !password) {
+      return res.status(400).json({ message: "All fields (first_name, last_name, email, password) are required" });
+    }
 
+    // Check if email already exists
     const [userExist] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
-    if (userExist.length > 0)
+    if (userExist.length > 0) {
       return res.status(400).json({ message: "Email already registered" });
+    }
 
+    // Hash password
     const hashed = await bcrypt.hash(password, 10);
-    await db.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, hashed]);
+
+    // Insert new user
+    await db.query(
+      "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
+      [first_name, last_name, email, hashed]
+    );
+
     res.json({ status: "success", message: "Registration successful" });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
