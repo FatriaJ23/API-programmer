@@ -26,7 +26,7 @@ app.use("/api", balanceRoute);
 app.use(errorHandler);
 
 // Gunakan port langsung (tanpa .env)
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
