@@ -54,7 +54,7 @@ export const makeTransaction = async (req, res) => {
     if (!user.length)
       return res.status(404).json({ message: "User not found" });
 
-    if (user[0].saldo < amount)
+    if (user[0].balance < amount)
       return res.status(400).json({ message: "Insufficient balance" });
 
     await pool.execute(

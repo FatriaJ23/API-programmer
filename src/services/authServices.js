@@ -8,7 +8,17 @@ export const register = async (req, res) => {
 
     // Validate required fields
     if (!first_name || !last_name || !email || !password) {
-      return res.status(400).json({ message: "All fields (first_name, last_name, email, password) are required" });
+      return res.status(400).json({
+        message: "All fields (first_name, last_name, email, password) are required",
+      });
+    }
+
+    // Password rule
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters and include uppercase, lowercase, and a number",
+      });
     }
 
     // Check email
@@ -17,10 +27,9 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    //password
+    // Hash password
     const hashed = await bcrypt.hash(password, 10);
 
-    // Insert new user
     await db.query(
       "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
       [first_name, last_name, email, hashed]
