@@ -40,13 +40,13 @@ export const topUp = async (req, res) => {
   }
 };
 
-// POST transaction
 export const makeTransaction = async (req, res) => {
   try {
     const { amount, description } = req.body;
     if (!amount || amount <= 0)
       return res.status(400).json({ message: "Invalid amount" });
 
+    // user balance
     const [user] = await pool.execute(
       "SELECT balance FROM users WHERE id = ?",
       [req.user.id]
@@ -54,20 +54,35 @@ export const makeTransaction = async (req, res) => {
     if (!user.length)
       return res.status(404).json({ message: "User not found" });
 
-    if (user[0].balance < amount)
+    const currentBalance = parseFloat(user[0].balance);
+    if (currentBalance < amount)
       return res.status(400).json({ message: "Insufficient balance" });
 
-    await pool.execute(
-      "UPDATE users SET balance = balance - ? WHERE id = ?",
-      [amount, req.user.id]
+    // check
+    const [updateResult] = await pool.execute(
+      "UPDATE users SET balance = balance - ? WHERE id = ? AND balance >= ?",
+      [amount, req.user.id, amount]
     );
 
+    if (updateResult.affectedRows === 0)
+      return res.status(400).json({ message: "Transaction failed (not enough balance)" });
+
     await pool.execute(
-      "INSERT INTO transactions (user_id, type, amount, description) VALUES (?, 'PAYMENT', ?, ?)",
+      "INSERT INTO transactions (user_id, type, amount, description) VALUES (?, 'payment', ?, ?)",
       [req.user.id, amount, description || "Transaction payment"]
     );
 
-    res.json({ message: "Transaction successful", amount });
+    // Get new balance
+    const [updated] = await pool.execute(
+      "SELECT balance FROM users WHERE id = ?",
+      [req.user.id]
+    );
+
+    res.json({
+      message: "Transaction successful",
+      amount,
+      new_balance: updated[0].balance
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
