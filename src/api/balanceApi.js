@@ -1,10 +1,6 @@
 import express from "express";
 import { verifyToken } from "../middlewares/authMiddleware.js";
-import {
-    getBalance,
-    topUp,
-    makeTransaction,
-} from "../services/balanceServices.js";
+import { getBalance, topUp, makeTransaction } from "../services/balanceServices.js";
 
 const router = express.Router();
 
