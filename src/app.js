@@ -11,13 +11,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Root route
-app.get("/", (req, res) => {
-  res.send("✅ API is running successfully on Railway!");
-});
+// Root route → redirect to Swagger
+app.get("/", (req, res) => res.redirect("/api-docs"));
 
 // Swagger route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 // Routes
 app.use("/api", authRoute);
