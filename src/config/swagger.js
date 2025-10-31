@@ -38,7 +38,8 @@ Digunakan untuk melakukan registrasi user baru agar dapat login ke sistem.
                 type: "object",
                 properties: {
                   email: { type: "string", example: "user@nutech-integrasi.com" },
-                  name: { type: "string", example: "User" },
+                  first_name: { type: "string", example: "User" },
+                  last_name: { type: "string", example: "nutech" },
                   password: { type: "string", example: "abcdef1234" },
                 },
                 required: ["email", "password"],
