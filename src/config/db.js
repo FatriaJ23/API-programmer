@@ -1,21 +1,15 @@
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 
-const pool = mysql.createConnection({
-    host: "localhost",
-    port: 8889,
-    user: "root",
-    password: "root",
-    database: "nutech",
+const db = mysql.createPool({
+    host: process.env.DB_HOST || "localhost",
+    port: process.env.DB_PORT || 8889,
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "root",
+    database: process.env.DB_NAME || "nutech",
 });
 
-pool.connect((err) => {
-    if (err) {
-        console.error("Gagal konek ke database", err.message);
-    } else {
-        console.log("Berhasil konek ke database");
-    }
-});
-
-const db = pool.promise();
+db.getConnection()
+    .then(() => console.log("Connected to MySQL Database!"))
+    .catch((err) => console.error("Database connection failed:", err.message));
 
 export default db;
