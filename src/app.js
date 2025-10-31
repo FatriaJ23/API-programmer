@@ -8,7 +8,7 @@ import "dotenv/config";
 
 const app = express();
 
-// Konfigurasi CORS agar Swagger & frontend bisa akses API
+// Konfigurasi CORS
 app.use(cors({
   origin: "*", // izinkan semua domain (bisa juga diganti dengan domain frontend kamu)
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

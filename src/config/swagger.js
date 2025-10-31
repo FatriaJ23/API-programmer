@@ -9,8 +9,8 @@ export const swaggerSpec = {
   },
   servers: [
     {
-      url: "http://localhost:3000/api",
-      description: "Local server",
+      url: "https://api-programmer-production.up.railway.app/api",
+      description: "Production server (Railway)",
     },
   ],
   components: {
