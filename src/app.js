@@ -10,28 +10,26 @@ const app = express();
 
 // Konfigurasi CORS
 app.use(cors({
-  origin: "*", // izinkan semua domain (bisa juga diganti dengan domain frontend kamu)
+  origin: "*",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// Middleware bawaan Express
+// Middleware
 app.use(express.json());
 
-// Root route → redirect ke Swagger UI
+// RootSwagger UI
 app.get("/", (req, res) => res.redirect("/api-docs"));
-
-// Swagger documentation route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // API routes
 app.use("/api", authRoute);
 app.use("/api", balanceRoute);
 
-// Error handling middleware
+// Error handling 
 app.use(errorHandler);
 
-// Gunakan port dari environment Railway
+// port Railway
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);

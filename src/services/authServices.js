@@ -11,13 +11,13 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "All fields (first_name, last_name, email, password) are required" });
     }
 
-    // Check if email already exists
+    // Check email
     const [userExist] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (userExist.length > 0) {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    // Hash password
+    //password
     const hashed = await bcrypt.hash(password, 10);
 
     // Insert new user
@@ -42,8 +42,8 @@ export const login = async (req, res) => {
     const user = rows[0];
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(401).json({ message: "Wrong password" });
-    const SECRET_KEY = process.env.JWT_SECRET || "dev-secret-" + Math.random().toString(36).slice(2, 10);
-    const token = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: "12h" });
+    const SECRET_KEY = "my-static-secret-key";
+    const token = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: "1h" });
     res.json({ status: "success", token });
   } catch (err) {
     res.status(500).json({ message: err.message });
